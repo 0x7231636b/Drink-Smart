@@ -1,14 +1,17 @@
-#include <Arduino.h>
-#include "soc/rtc.h"
 #include "HX711.h"
+#include "soc/rtc.h"
+#include <Arduino.h>
 
 #define LOG(x) Serial.println(x);
-#define LOG_VALUE(x, y) Serial.print(x); LOG(y)
+#define LOG_VALUE(x, y)                                                        \
+  Serial.print(x);                                                             \
+  LOG(y)
 
 void logCalibrationFactor();
 long measureGrams();
 
-// TODO: Edit calibrationFactor to the value you got from the logCalibrationFactor function
+// TODO: Edit calibrationFactor to the value you got from the
+// logCalibrationFactor function
 const int calibrationFactor = 422;
 
 const int scaleDoutPin = 33;
@@ -27,13 +30,10 @@ void setupClockSpeed() {
 void setup() {
   Serial.begin(115200);
 
-  
   setupClockSpeed();
   scale.begin(scaleDoutPin, scaleSckPin);
   scale.set_scale(calibrationFactor);
   scale.tare();
-
-
 
   LOG("Setup finished");
 }
@@ -41,7 +41,7 @@ void setup() {
 void loop() {
   // logCalibrationFactor();
   measureGrams();
-  
+
   scale.power_down();
   delay(5000);
   scale.power_up();
@@ -56,7 +56,7 @@ long measureGrams() {
 
 void logCalibrationFactor() {
   if (scale.is_ready()) {
-    scale.set_scale();    
+    scale.set_scale();
     LOG("Tare... remove any weights from the scale.");
     delay(5000);
     scale.tare();
@@ -66,11 +66,9 @@ void logCalibrationFactor() {
     long reading = scale.get_units(10);
     LOG_VALUE("Result: ", reading);
     LOG(reading);
-    LOG_VALUE("Calibration factor: ", reading/300);
-  } 
-  else {
+    LOG_VALUE("Calibration factor: ", reading / 300);
+  } else {
     LOG("HX711 not found.");
     delay(1000);
   }
 }
-
