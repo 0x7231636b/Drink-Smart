@@ -9,4 +9,4 @@ UNCRUSTIFY=$(which uncrustify 2>/dev/null)
 UNCRUSTIFY="${UNCRUSTIFY:-$DIR/uncrustify.exe}"
 printf "Using Uncrustify at \"$UNCRUSTIFY\" ...\n"
 
-find ../../ \( -name 'lib' -prune -false -o \( -name "*.hpp" -o -name "*.h" -o -name "*.cpp" -o -name "*.c" \) \) -exec $UNCRUSTIFY -c ./uncrustify.cfg --replace --no-backup {} +
+find ../../ -type d -name '.pio' -prune -o -type f \( -name "*.hpp" -o -name "*.h" -o -name "*.cpp" -o -name "*.c" \) -print -exec $UNCRUSTIFY -c ./uncrustify.cfg --replace --no-backup {} +
