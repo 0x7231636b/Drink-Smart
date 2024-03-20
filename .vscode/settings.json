@@ -1,5 +1,14 @@
 {
   "files.associations": {
     "functional": "cpp"
+  },
+  "uncrustify.configPath.linux": "devtools/formatter/uncrustify.cfg",
+  "uncrustify.configPath.osx": "devtools/formatter/uncrustify.cfg",
+  "uncrustify.configPath.windows": "devtools/formatter/uncrustify.cfg",
+  "uncrustify.useReplaceOption": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "zachflower.uncrustify",
+  "[cpp]": {
+    "editor.defaultFormatter": "zachflower.uncrustify"
   }
 }
