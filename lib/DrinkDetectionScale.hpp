@@ -8,18 +8,20 @@ class DrinkDetectionScale {
 
 public:
     DrinkDetectionScale(const int& calibrationFactor,
+                        const std::function<void(const long&)>& measurementDoneAction,
                         const int& doutPin = 33,
                         const int& sckPin = 32,
                         const int& deviation = 25);
 
-    void setMeasurementDoneCallback(std::function<void(const long&)>& measurementDoneAction);
-
     void tare();
+    void start();
+    void stop();
 
 private:
     HX711 scale;
     long lastMeasuredValue;
     int deviation;
+    boolean isRunning;
 
     std::function<void(const long&)> measurementDoneAction;
 
