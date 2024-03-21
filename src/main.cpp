@@ -1,6 +1,7 @@
 #include "HX711.h"
 #include "soc/rtc.h"
 #include <Arduino.h>
+#include "../lib/DrinkDetectionScale.hpp"
 
 #define LOG(x) Serial.println(x);
 #define LOG_VALUE(x, y) \
@@ -19,6 +20,12 @@ const int scaleSckPin = 32;
 
 HX711 scale;
 
+void printDetectedWeight(const long& weight) {
+    LOG_VALUE("Detected weight: ", weight);
+}
+
+DrinkDetectionScale drinkDetectionScale(calibrationFactor, printDetectedWeight);
+
 void setupClockSpeed() {
     rtc_cpu_freq_config_t config;
     rtc_clk_cpu_freq_get_config(&config);
@@ -29,22 +36,22 @@ void setupClockSpeed() {
 
 void setup() {
     Serial.begin(115200);
-
     setupClockSpeed();
-    scale.begin(scaleDoutPin, scaleSckPin);
-    scale.set_scale(calibrationFactor);
-    scale.tare();
 
+    drinkDetectionScale.start();
     LOG("Setup finished");
 }
 
 void loop() {
-    // logCalibrationFactor();
-    measureGrams();
 
-    scale.power_down();
-    delay(5000);
-    scale.power_up();
+
+
+    // logCalibrationFactor();
+    // measureGrams();
+
+    // Since the thread in DrinkDetectionScale is running, we don't need to do anything here
+    delay(10000);
+
     LOG("loop finished");
 }
 
