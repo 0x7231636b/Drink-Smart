@@ -8,7 +8,6 @@ public:
     DrinkDetectionScale(const int& calibrationFactor,
                         const int& doutPin = 33,
                         const int& sckPin = 32);
-    virtual ~DrinkDetectionScale() = default;
 
     // TODO: research whether std::function is a reference or ptr by default, pass
     // this as reference or ptr if needed
