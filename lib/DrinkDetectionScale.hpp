@@ -9,9 +9,7 @@ public:
                         const int& doutPin = 33,
                         const int& sckPin = 32);
 
-    // TODO: research whether std::function is a reference or ptr by default, pass
-    // this as reference or ptr if needed
-    void setRequestSenderCallback(std::function<void(const long&)> callback);
+    void setMeasurementDoneCallback(std::function<void(const long&)>& measurementDoneAction);
 
     void tare();
 
@@ -19,5 +17,5 @@ private:
     HX711 scale;
     long lastMeasuredValue;
 
-    std::function<void(const long&)> requestSender;
+    std::function<void(const long&)> measurementDoneAction;
 };

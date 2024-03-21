@@ -14,8 +14,8 @@ DrinkDetectionScale::DrinkDetectionScale(const int& calibrationFactor,
     // Thread function within this implementation started by the constructor
 }
 
-void DrinkDetectionScale::setRequestSenderCallback(std::function<void(const long&)> callback) {
-    requestSender = callback;
+void DrinkDetectionScale::setMeasurementDoneCallback(std::function<void(const long&)>& callback) {
+    this->measurementDoneAction = measurementDoneAction;
 }
 
 void DrinkDetectionScale::tare() { scale.tare(); }
