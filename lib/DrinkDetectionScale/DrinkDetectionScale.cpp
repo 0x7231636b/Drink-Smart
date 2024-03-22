@@ -92,13 +92,18 @@ void DrinkDetectionScale::handleCupOnScaleState() {
 void DrinkDetectionScale::handleDrinkingInProgressState() {
     const long currentValue = scale.get_units();
     if (currentValue > deviation && currentValue + deviation < lastMeasuredValue) {
-        // Drink (difference detected)
+        LOG("Drink detected");
         measurementDoneAction(lastMeasuredValue - currentValue);
         lastMeasuredValue = currentValue;
         state = State::CUP_ON_SCALE;
     } else if (lastMeasuredValue - currentValue < deviation) {
+        LOG("Put back on scale w/o drinking");
         // Put back on scale w/o drinking
         state = State::CUP_ON_SCALE;
+    } else if (lastMeasuredValue + deviation < currentValue) {
+        LOG("Refill detected")
+        // TODO: Correct refill detection properly
+        // TODO: Implement a refill callback to store the data for analytics
+        lastMeasuredValue = currentValue;
     }
-    // TODO: implement refill detection and handle states accordingly
 }
