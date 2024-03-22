@@ -1,12 +1,8 @@
 #include "HX711.h"
 #include "soc/rtc.h"
 #include <Arduino.h>
-#include "../lib/DrinkDetectionScale.hpp"
-
-#define LOG(x) Serial.println(x);
-#define LOG_VALUE(x, y) \
-        Serial.print(x); \
-        LOG(y)
+#include "../lib/DrinkDetectionScale/DrinkDetectionScale.hpp"
+#include "../lib/Logger/Logger.hpp"
 
 void logCalibrationFactor();
 long measureGrams();
@@ -21,7 +17,7 @@ const int scaleSckPin = 32;
 HX711 scale;
 
 void printDetectedWeight(const long& weight) {
-    LOG_VALUE("Detected weight: ", weight);
+    LOG_VALUE("!!!! Detected weight difference: ", weight);
 }
 
 DrinkDetectionScale drinkDetectionScale(calibrationFactor, printDetectedWeight);
@@ -49,8 +45,8 @@ void loop() {
     // logCalibrationFactor();
     // measureGrams();
 
-    // Since the thread in DrinkDetectionScale is running, we don't need to do anything here
-    delay(10000);
+    
+    delay(1000);
 
     LOG("loop finished");
 }
