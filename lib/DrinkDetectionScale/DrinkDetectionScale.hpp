@@ -17,6 +17,14 @@
 class DrinkDetectionScale {
 
 public:
+    enum class State {
+        UNDEFINED,
+        INITIALIZED,
+        CUP_ON_SCALE,
+        DRINKING_IN_PROGRESS,
+    };
+
+public:
     DrinkDetectionScale(const int& calibrationFactor,
                         const std::function<void(const long&)>& measurementDoneAction,
                         const int& doutPin = 33,
@@ -29,8 +37,9 @@ public:
 
 private:
     HX711 scale;
+    State state;
+    long tareValue;
     long lastMeasuredValue;
-    bool isCupOnScale;
     int deviation;
     boolean isRunning;
 
@@ -38,7 +47,10 @@ private:
     std::thread measurementThread;
 
     void measureWeight();
-    void handleScaleStateDetection(const long& diff);
-    void handleDrinkDetection(const long& diff);
+
+    void handleInitializedState();
+    void handleCupOnScaleState();
+    void handleDrinkingInProgressState();
+    void handleDifferenceDetectedState();
 
 };

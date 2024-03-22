@@ -8,9 +8,10 @@ DrinkDetectionScale::DrinkDetectionScale(const int& calibrationFactor,
                                          const int& sckPin,
                                          const int& deviation) :
     scale(HX711()),
+    state(State::UNDEFINED),
+    tareValue(0),
     lastMeasuredValue(0),
-    isCupOnScale(true),
-    deviation(deviation), 
+    deviation(deviation),
     isRunning(false),
     measurementDoneAction(measurementDoneAction) {
 
@@ -36,17 +37,30 @@ void DrinkDetectionScale::measureWeight() {
     while (true) {
         LOG("Taring scale");
         scale.tare();
-        LOG_VALUE("Tare done, measurement: ", scale.get_units());
+        tareValue = scale.get_units();
+
+        state = State::INITIALIZED;
+
+        lastMeasuredValue = tareValue;
+        LOG_VALUE("Tare done, testing measurement: ", tareValue);
         while (isRunning) {
-            LOG_VALUE("Last measured value: ", lastMeasuredValue);
-            long currentValue = scale.get_units();
-            LOG_VALUE("Current value: ", currentValue);
-            long diff = lastMeasuredValue - currentValue;
-            LOG_VALUE("Calculated Diff: ", diff);
-
-            handleDrinkDetection(diff);
-
-
+            switch (state) {
+            case State::UNDEFINED :
+                LOG("State is UNDEFINED");
+                break;
+            case State::INITIALIZED :
+                LOG("State is INITIALIZED");
+                handleInitializedState();
+                break;
+            case State::CUP_ON_SCALE :
+                LOG("State is CUP_ON_SCALE");
+                handleCupOnScaleState();
+                break;
+            case State::DRINKING_IN_PROGRESS :
+                LOG("State is DRINKING_IN_PROGRESS");
+                handleDrinkingInProgressState();
+                break;
+            }
             LOG("Sleeping for 1 second\n");
             delay(1000);
         }
@@ -55,21 +69,36 @@ void DrinkDetectionScale::measureWeight() {
         delay(1000);
         scale.power_up();
     }
-        LOG("Thread finished, could not happen");
+    LOG("Thread finished, could not happen");
 
 }
 
-void DrinkDetectionScale::handleDrinkDetection(const long& diff) {
-    
-    if (diff + deviation < 0) {
-        LOG("diff + deviation < 0");
+void DrinkDetectionScale::handleInitializedState() {
+    // cup set on the scale
+    const long currentValue = scale.get_units();
+    if (tareValue + deviation < currentValue) {
         lastMeasuredValue = currentValue;
-    } else if (diff > deviation) {
-        LOG("diff > deviation");
-        measurementDoneAction(diff);
+        state = State::CUP_ON_SCALE;
     }
-    else 
-    {
-        LOG("diff < deviation");
+}
+
+void DrinkDetectionScale::handleCupOnScaleState() {
+    const long currentValue = scale.get_units();
+    if (lastMeasuredValue - currentValue > deviation) {
+        state = State::DRINKING_IN_PROGRESS;
     }
-};
+}
+
+void DrinkDetectionScale::handleDrinkingInProgressState() {
+    const long currentValue = scale.get_units();
+    if (currentValue > deviation && currentValue + deviation < lastMeasuredValue) {
+        // Drink (difference detected)
+        measurementDoneAction(lastMeasuredValue - currentValue);
+        lastMeasuredValue = currentValue;
+        state = State::CUP_ON_SCALE;
+    } else if (lastMeasuredValue - currentValue < deviation) {
+        // Put back on scale w/o drinking
+        state = State::CUP_ON_SCALE;
+    }
+    // TODO: implement refill detection and handle states accordingly
+}
