@@ -60,6 +60,5 @@
   "editor.defaultFormatter": "zachflower.uncrustify",
   "[cpp]": {
     "editor.defaultFormatter": "zachflower.uncrustify"
-  },
-  "editor.formatOnPaste": true
+  }
 }
