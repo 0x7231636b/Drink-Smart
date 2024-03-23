@@ -89,21 +89,28 @@ void DrinkDetectionScale::handleCupOnScaleState() {
     }
 }
 
+/// @brief Handle the State::DRINKING_IN_PROGRESS state
+/// @details The order of the if statements is important to be handled properly, since
+/// the detection of refill and cup placed back on scale interfere due to the nature of
+/// calculating with negative numbers.
+/// @todo Implement a refill callback to store the data for analytics
+/// @todo make the order of the if statements robust (check for negative values out of deviation range)
 void DrinkDetectionScale::handleDrinkingInProgressState() {
     const long currentValue = scale.get_units();
+    LOG_VALUE("Current value: ", currentValue);
+    LOG_VALUE("Last measured value: ", lastMeasuredValue);
     if (currentValue > deviation && currentValue + deviation < lastMeasuredValue) {
-        LOG("Drink detected");
+        LOG("DRINK detected");
         measurementDoneAction(lastMeasuredValue - currentValue);
         lastMeasuredValue = currentValue;
         state = State::CUP_ON_SCALE;
-    } else if (lastMeasuredValue - currentValue < deviation) {
-        LOG("Put back on scale w/o drinking");
-        // Put back on scale w/o drinking
-        state = State::CUP_ON_SCALE;
     } else if (lastMeasuredValue + deviation < currentValue) {
-        LOG("Refill detected")
-        // TODO: Correct refill detection properly
+        LOG("REFILL detected")
         // TODO: Implement a refill callback to store the data for analytics
         lastMeasuredValue = currentValue;
+        state = State::CUP_ON_SCALE;
+    } else if (lastMeasuredValue - currentValue < deviation) {
+        LOG("Cup put back on scale w/o drinking");
+        state = State::CUP_ON_SCALE;
     }
 }
