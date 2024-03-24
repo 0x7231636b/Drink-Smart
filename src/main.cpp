@@ -45,8 +45,8 @@ void loop() {
     // logCalibrationFactor();
     // measureGrams();
 
-    
-    delay(1000);
+
+    delay(10000);
 
     LOG("loop finished");
 }

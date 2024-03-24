@@ -62,11 +62,11 @@ void DrinkDetectionScale::measureWeight() {
                 break;
             }
             LOG("Sleeping for 1 second\n");
-            delay(1000);
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
         LOG("Sleeping for 1 second and power down scale");
         scale.power_down();
-        delay(1000);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         scale.power_up();
     }
     LOG("Thread finished, could not happen");
