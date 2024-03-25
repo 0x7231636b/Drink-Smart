@@ -1,4 +1,4 @@
-#include "RestClient.h"
+#include <HTTPClient.h>
 
 class DrinkDetectionConnector {
 public:
@@ -7,5 +7,5 @@ public:
     void sendWeight(const long& weight);
 
 private:
-    RestClient client;
+    HTTPClient client;
 };

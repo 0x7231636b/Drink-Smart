@@ -50,7 +50,8 @@
     "streambuf": "cpp",
     "thread": "cpp",
     "cinttypes": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "iostream": "cpp"
   },
   "uncrustify.configPath.linux": "devtools/formatter/uncrustify.cfg",
   "uncrustify.configPath.osx": "devtools/formatter/uncrustify.cfg",

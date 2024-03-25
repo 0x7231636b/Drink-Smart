@@ -1,20 +1,25 @@
 #include "DrinkDetectionConnector.hpp"
 
-#include <chrono>
+#include "Config.hpp"
+#include "Utils.hpp"
+#include <Logger.hpp>
+#include <string>
+#include <iostream>
+#include <Arduino.h>
 
-#include "Configuration.hpp"
+DrinkDetectionConnector::DrinkDetectionConnector() :
+    client() {}
 
-DrinkDetectionConnector::DrinkDetectionConnector() : client("http://localhost:8080/") {
-    client.begin(Configuration::SSID, Configuration::PASSWORD);
-}
+void DrinkDetectionConnector::sendWeight(const long& weight) {
+    auto weightString = Utils::to_string(weight);
+    auto timeString = Utils::to_string(Utils::timeInMs());
 
-DrinkDetectionConnector::sendWeight(const long& weight) {
-    String weightString = String(weight);
+    std::string payload = "{\"userName\": dev,"
+                          "\"volume\": " + weightString + ","
+                          ", \"timeStamp\": " + timeString + "}";
+    std::string endpoint = Config::backendUrl + "/drinkdetection/add";
 
-// TODO: Create a simple JSON creator that takes a map and creates a JSON string from the key-value pairs
-    String payload = "{\"userName\": " + dev +
-                     ", \"volume\": " + weightString +
-                     ", \"timeStamp\": " + std::chrono::system_clock::now() + "}";
-
-    client.post("/drinkdetection/add", "application/json", payload);
+    client.begin(endpoint.c_str());
+    client.addHeader("Content-Type", "application/json");
+    client.POST(payload.c_str());
 }
