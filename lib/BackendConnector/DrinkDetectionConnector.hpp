@@ -1,11 +1,6 @@
-#include <HTTPClient.h>
-
 class DrinkDetectionConnector {
 public:
-    DrinkDetectionConnector();
+    virtual ~DrinkDetectionConnector() = default;
 
-    void sendWeight(const long& weight);
-
-private:
-    HTTPClient client;
+    virtual void sendWeight(const long& weight) = 0;
 };

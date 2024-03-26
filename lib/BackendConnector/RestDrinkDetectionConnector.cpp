@@ -1,4 +1,4 @@
-#include "DrinkDetectionConnector.hpp"
+#include "RestDrinkDetectionConnector.hpp"
 
 #include "Config.hpp"
 #include "Utils.hpp"
@@ -7,10 +7,10 @@
 #include <iostream>
 #include <Arduino.h>
 
-DrinkDetectionConnector::DrinkDetectionConnector() :
+RestDrinkDetectionConnector::RestDrinkDetectionConnector() :
     client() {}
 
-void DrinkDetectionConnector::sendWeight(const long& weight) {
+void RestDrinkDetectionConnector::sendWeight(const long& weight) {
     auto weightString = Utils::to_string(weight);
     auto timeString = Utils::to_string(Utils::timeInMs());
 

@@ -3,7 +3,7 @@
 #include "Logger.hpp"
 
 DrinkDetectionScale::DrinkDetectionScale(const int& calibrationFactor,
-                                         const std::function<void(const long&)>& measurementDoneAction,
+                                         std::unique_ptr<DrinkDetectionAction> drinkDetectionAction,
                                          const int& doutPin,
                                          const int& sckPin,
                                          const int& deviation) :
@@ -13,7 +13,7 @@ DrinkDetectionScale::DrinkDetectionScale(const int& calibrationFactor,
     lastMeasuredValue(0),
     deviation(deviation),
     isRunning(false),
-    measurementDoneAction(measurementDoneAction) {
+    drinkDetectionAction(std::move(drinkDetectionAction)) {
 
     scale.begin(doutPin, sckPin);
     scale.set_scale(calibrationFactor);
@@ -101,7 +101,7 @@ void DrinkDetectionScale::handleDrinkingInProgressState() {
     LOG_VALUE("Last measured value: ", lastMeasuredValue);
     if (currentValue > deviation && currentValue + deviation < lastMeasuredValue) {
         LOG("DRINK detected");
-        measurementDoneAction(lastMeasuredValue - currentValue);
+        drinkDetectionAction->drinkDetected(lastMeasuredValue - currentValue);
         lastMeasuredValue = currentValue;
         state = State::CUP_ON_SCALE;
     } else if (lastMeasuredValue + deviation < currentValue) {

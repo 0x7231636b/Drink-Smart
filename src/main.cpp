@@ -5,12 +5,9 @@
 #include "Logger.hpp"
 #include <WiFi.h>
 #include "Config.hpp"
+#include <RestDrinkDetectionAction.hpp>
 
-void printDetectedWeight(const long& weight) {
-    LOG_VALUE("!!!! Detected weight difference: ", weight);
-}
-
-DrinkDetectionScale drinkDetectionScale(Config::calibrationFactor, printDetectedWeight);
+DrinkDetectionScale drinkDetectionScale(Config::calibrationFactor, std::make_unique<RestDrinkDetectionAction>());
 
 void setupClockSpeed() {
     rtc_cpu_freq_config_t config;

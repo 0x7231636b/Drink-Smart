@@ -4,6 +4,7 @@
 #include <functional>
 #include <thread>
 #include "Config.hpp"
+#include "DrinkDetectionAction.hpp"
 
 /// @brief Class to detect if a drink on the scale has lost weight
 /// @details The class uses a HX711 scale to measure the weight of a drink.
@@ -27,7 +28,7 @@ public:
 
 public:
     DrinkDetectionScale(const int& calibrationFactor,
-                        const std::function<void(const long&)>& measurementDoneAction,
+                        const std::unique_ptr<DrinkDetectionAction> drinkDetectionAction,
                         const int& doutPin = Config::scaleDoutPin,
                         const int& sckPin = Config::scaleSckPin,
                         const int& deviation = Config::scaleDeviation);
@@ -44,7 +45,7 @@ private:
     int deviation;
     boolean isRunning;
 
-    std::function<void(const long&)> measurementDoneAction;
+    std::unique_ptr<DrinkDetectionAction> drinkDetectionAction;
     std::thread measurementThread;
 
     void measureWeight();
