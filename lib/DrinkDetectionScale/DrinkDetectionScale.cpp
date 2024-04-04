@@ -17,8 +17,14 @@ DrinkDetectionScale::DrinkDetectionScale(const int& calibrationFactor,
 
     scale.begin(doutPin, sckPin);
     scale.set_scale(calibrationFactor);
-    measurementThread = std::thread([this] { this->measureWeight(); });
-    measurementThread.detach();
+    xTaskCreate(measureWeightTask, "MeasureWeight", 2048, this, 1, &measurementTaskHandle);
+}
+
+
+void DrinkDetectionScale::measureWeightTask(void *pvParameters) {
+    DrinkDetectionScale *instance = static_cast<DrinkDetectionScale*>(pvParameters);
+    instance->measureWeight();
+    vTaskDelete(nullptr); 
 }
 
 void DrinkDetectionScale::tare() { scale.tare(); }
@@ -62,11 +68,12 @@ void DrinkDetectionScale::measureWeight() {
                 break;
             }
             LOG("Sleeping for 1 second\n");
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            vTaskDelay(pdMS_TO_TICKS(1000));
+
         }
         LOG("Sleeping for 1 second and power down scale");
         scale.power_down();
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        vTaskDelay(pdMS_TO_TICKS(1000));
         scale.power_up();
     }
     LOG("Thread finished, could not happen");

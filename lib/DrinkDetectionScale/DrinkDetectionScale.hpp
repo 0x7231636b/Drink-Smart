@@ -5,6 +5,9 @@
 #include <thread>
 #include "Config.hpp"
 #include "DrinkDetectionAction.hpp"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 
 /// @brief Class to detect if a drink on the scale has lost weight
 /// @details The class uses a HX711 scale to measure the weight of a drink.
@@ -46,7 +49,8 @@ private:
     boolean isRunning;
 
     std::unique_ptr<DrinkDetectionAction> drinkDetectionAction;
-    std::thread measurementThread;
+    TaskHandle_t measurementTaskHandle;
+    static void measureWeightTask(void* pvParameters);
 
     void measureWeight();
 

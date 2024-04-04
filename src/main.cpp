@@ -6,6 +6,7 @@
 #include <WiFi.h>
 #include "Config.hpp"
 #include <RestDrinkDetectionAction.hpp>
+#include "time.h"
 
 DrinkDetectionScale drinkDetectionScale(Config::calibrationFactor, std::make_unique<RestDrinkDetectionAction>());
 
@@ -25,6 +26,15 @@ void setupWifi() {
     }
     LOG_VALUE("Connected to: ", Config::ssid.c_str());
     LOG_VALUE("IP address: ", WiFi.localIP());
+
+    // Synchronize time after WiFi connection
+    configTime(0, 0, "pool.ntp.org");
+    Serial.println("Waiting for time sync");
+    while (time(nullptr) < 24 * 3600) {
+        delay(100);
+        Serial.print(".");
+    }
+    LOG("Time synchronized with NTP server");
 }
 
 void setup() {

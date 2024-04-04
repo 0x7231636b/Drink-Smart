@@ -1,4 +1,5 @@
 #include "RestDrinkDetectionAction.hpp"
+#include <Logger.hpp>
 
 RestDrinkDetectionAction::RestDrinkDetectionAction() :
     drinkDetectionConnector(std::make_unique<RestDrinkDetectionConnector>()) {}
