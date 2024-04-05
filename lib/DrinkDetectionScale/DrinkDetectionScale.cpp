@@ -64,10 +64,6 @@ void DrinkDetectionScale::measureWeight() {
         LOG("Sleeping for 1 second\n");
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-    LOG("Sleeping for 1 second and power down scale");
-    scale.power_down();
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    scale.power_up();
 
     LOG("Thread finished");
 
