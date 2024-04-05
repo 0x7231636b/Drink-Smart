@@ -17,13 +17,13 @@ DrinkDetectionScale::DrinkDetectionScale(const int& calibrationFactor,
 
     scale.begin(doutPin, sckPin);
     scale.set_scale(calibrationFactor);
-    measurementThread = std::thread([this] { this->measureWeight(); });
-    measurementThread.detach();
 }
 
 void DrinkDetectionScale::tare() { scale.tare(); }
 
 void DrinkDetectionScale::start() {
+    measurementThread = std::thread([this] { this->measureWeight(); });
+    measurementThread.detach();
     isRunning = true;
     LOG("DrinkDetectionScale::start set isRunning to true");
 }
@@ -34,42 +34,42 @@ void DrinkDetectionScale::stop() {
 
 void DrinkDetectionScale::measureWeight() {
     LOG("Starting thread");
-    while (true) {
-        LOG("Taring scale");
-        scale.tare();
-        tareValue = scale.get_units();
 
-        state = State::INITIALIZED;
+    LOG("Taring scale");
+    scale.tare();
+    tareValue = scale.get_units();
 
-        lastMeasuredValue = tareValue;
-        LOG_VALUE("Tare done, testing measurement: ", tareValue);
-        while (isRunning) {
-            switch (state) {
-            case State::UNDEFINED :
-                LOG("State is UNDEFINED");
-                break;
-            case State::INITIALIZED :
-                LOG("State is INITIALIZED");
-                handleInitializedState();
-                break;
-            case State::CUP_ON_SCALE :
-                LOG("State is CUP_ON_SCALE");
-                handleCupOnScaleState();
-                break;
-            case State::DRINKING_IN_PROGRESS :
-                LOG("State is DRINKING_IN_PROGRESS");
-                handleDrinkingInProgressState();
-                break;
-            }
-            LOG("Sleeping for 1 second\n");
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+    state = State::INITIALIZED;
+
+    lastMeasuredValue = tareValue;
+    LOG_VALUE("Tare done, testing measurement: ", tareValue);
+    while (isRunning) {
+        switch (state) {
+        case State::UNDEFINED :
+            LOG("State is UNDEFINED");
+            break;
+        case State::INITIALIZED :
+            LOG("State is INITIALIZED");
+            handleInitializedState();
+            break;
+        case State::CUP_ON_SCALE :
+            LOG("State is CUP_ON_SCALE");
+            handleCupOnScaleState();
+            break;
+        case State::DRINKING_IN_PROGRESS :
+            LOG("State is DRINKING_IN_PROGRESS");
+            handleDrinkingInProgressState();
+            break;
         }
-        LOG("Sleeping for 1 second and power down scale");
-        scale.power_down();
+        LOG("Sleeping for 1 second\n");
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        scale.power_up();
     }
-    LOG("Thread finished, could not happen");
+    LOG("Sleeping for 1 second and power down scale");
+    scale.power_down();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    scale.power_up();
+
+    LOG("Thread finished");
 
 }
 
