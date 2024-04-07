@@ -22,10 +22,12 @@ DrinkDetectionScale::DrinkDetectionScale(const int& calibrationFactor,
 void DrinkDetectionScale::tare() { scale.tare(); }
 
 void DrinkDetectionScale::start() {
+    isRunning = true;
+
     measurementThread = std::thread([this] { this->measureWeight(); });
     measurementThread.detach();
-    isRunning = true;
-    LOG("DrinkDetectionScale::start set isRunning to true");
+
+    LOG("DrinkDetectionScale::start executed, thread detached");
 }
 
 void DrinkDetectionScale::stop() {
