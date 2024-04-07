@@ -17,6 +17,16 @@ void setupClockSpeed() {
     LOG("Clock speed set to 80MHz");
 }
 
+void syncTime() {
+    configTime(0, 0, "pool.ntp.org");
+    Serial.println("Waiting for time sync");
+    while (time(nullptr) < 24 * 3600) {
+        delay(100);
+        Serial.print(".");
+    }
+    LOG("Time synchronized with NTP server");
+}
+
 void setupWifi() {
     WiFi.begin(Config::ssid.c_str(), Config::wifiPassword.c_str());
     while (WiFi.status() != WL_CONNECTED) {
@@ -31,6 +41,7 @@ void setup() {
     Serial.begin(115200);
     setupClockSpeed();
     setupWifi();
+    syncTime();
 
     drinkDetectionScale.start();
     LOG("Setup finished");
