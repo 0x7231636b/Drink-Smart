@@ -6,8 +6,20 @@
 #include <WiFi.h>
 #include "Config.hpp"
 #include <RestDrinkDetectionAction.hpp>
+#include <esp_pthread.h>
 
 DrinkDetectionScale drinkDetectionScale(Config::calibrationFactor, std::make_unique<RestDrinkDetectionAction>());
+
+void setupStackSize() {
+    esp_pthread_cfg_t new_cfg = esp_pthread_get_default_config();
+
+    new_cfg.stack_size = 10 * 1024;
+    new_cfg.inherit_cfg = true;
+    new_cfg.thread_name = "drink_detection_thread";
+    new_cfg.pin_to_core = 1;
+
+    esp_pthread_set_cfg(&new_cfg);
+}
 
 void setupClockSpeed() {
     rtc_cpu_freq_config_t config;
@@ -40,6 +52,7 @@ void setupWifi() {
 void setup() {
     Serial.begin(115200);
     setupClockSpeed();
+    setupStackSize();
     setupWifi();
     syncTime();
 
