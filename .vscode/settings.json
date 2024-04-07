@@ -51,7 +51,9 @@
     "thread": "cpp",
     "cinttypes": "cpp",
     "typeinfo": "cpp",
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "bitset": "cpp",
+    "regex": "cpp"
   },
   "uncrustify.configPath.linux": "devtools/formatter/uncrustify.cfg",
   "uncrustify.configPath.osx": "devtools/formatter/uncrustify.cfg",
