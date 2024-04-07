@@ -4,7 +4,7 @@
 
 namespace Utils {
 
-long timeInMs();
+int64_t timeInMs();
 
 template <class T>
 inline std::string to_string(const T& t) {
