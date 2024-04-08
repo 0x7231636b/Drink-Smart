@@ -50,12 +50,17 @@
     "streambuf": "cpp",
     "thread": "cpp",
     "cinttypes": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "iostream": "cpp",
+    "bitset": "cpp",
+    "regex": "cpp"
   },
   "uncrustify.configPath.linux": "devtools/formatter/uncrustify.cfg",
   "uncrustify.configPath.osx": "devtools/formatter/uncrustify.cfg",
   "uncrustify.configPath.windows": "devtools/formatter/uncrustify.cfg",
   "uncrustify.useReplaceOption": true,
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "zachflower.uncrustify",
   "[cpp]": {
