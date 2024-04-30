@@ -14,7 +14,7 @@ const std::string wifiPassword = "PASSWORD";
 const int calibrationFactor = 422;
 const int scaleDoutPin = 33;
 const int scaleSckPin = 32;
-const int scaleDeviation = 10;
+const int scaleDeviation = 20;
 
 const uint8_t ledPinRed = 12;
 const uint8_t ledPinGreen = 14;
