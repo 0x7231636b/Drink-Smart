@@ -1,11 +1,13 @@
 #pragma once
 
 #include <HX711.h>
+#include "Config.hpp"
 
 class ScaleCalibrator {
 
 public:
-    ScaleCalibrator();
+    ScaleCalibrator(const int& doutPin = Config::scaleDoutPin,
+                    const int& sckPin = Config::scaleSckPin);
 
     /// @brief  Logs the calibration factor of the scale
     /// @param calibrationWeight measured in grams
