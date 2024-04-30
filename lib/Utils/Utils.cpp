@@ -21,7 +21,7 @@ Color blue() {
 }
 
 Color orange() {
-    return Color{ 255, 120, 0 };
+    return Color{ 255, 75, 0 };
 }
 
 
