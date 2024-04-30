@@ -1,6 +1,29 @@
 #include <chrono>
 
+#include "Utils.hpp"
+
 namespace Utils {
+
+Color black() {
+    return Color{ 0, 0, 0 };
+}
+
+Color red() {
+    return Color{ 255, 0, 0 };
+}
+
+Color green() {
+    return Color{ 0, 255, 0 };
+}
+
+Color blue() {
+    return Color{ 0, 0, 255 };
+}
+
+Color orange() {
+    return Color{ 255, 120, 0 };
+}
+
 
 int64_t timeInMs() {
     auto now = std::chrono::system_clock::now();

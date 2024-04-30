@@ -4,6 +4,18 @@
 
 namespace Utils {
 
+struct Color {
+    int red;
+    int green;
+    int blue;
+};
+
+Color black();
+Color red();
+Color green();
+Color blue();
+Color orange();
+
 int64_t timeInMs();
 
 template <class T>
