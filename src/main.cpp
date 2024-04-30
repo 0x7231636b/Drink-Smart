@@ -25,18 +25,12 @@ void setup() {
     setupTime();
 
     LedToolkit::setColor(Utils::red());
-    // drinkDetectionScale.start(); // TODO: uncomment this line to start the scale
+    drinkDetectionScale.start();
 
     LOG("Setup finished");
 }
 
-ScaleCalibrator scaleCalibrator;
-
 void loop() {
-    // scaleCalibrator.logCalibrationFactor(500);
-
-    LedToolkit::blinkRed();
-    LedToolkit::blinkRed(50);
-    scaleCalibrator.measureGrams();
+    delay(10000);
     LOG("loop finished");
 }
