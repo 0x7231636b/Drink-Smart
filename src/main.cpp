@@ -5,8 +5,13 @@
 #include "Logger.hpp"
 #include <WiFi.h>
 #include "Config.hpp"
+#include <LedToolkit.hpp>
 #include <RestDrinkDetectionAction.hpp>
 #include <esp_pthread.h>
+
+#include <analogWrite.h>
+#include <ScaleCalibrator.hpp>
+
 
 DrinkDetectionScale drinkDetectionScale(Config::calibrationFactor, std::make_unique<RestDrinkDetectionAction>());
 
@@ -50,17 +55,28 @@ void setupWifi() {
 }
 
 void setup() {
+    LedToolkit::setupLeds();
     Serial.begin(115200);
     setupClockSpeed();
     setupStackSize();
+
+    LedToolkit::setLedConnecting();
     setupWifi();
     syncTime();
 
-    drinkDetectionScale.start();
+    LedToolkit::setColor(Utils::red());
+    // drinkDetectionScale.start(); // TODO: uncomment this line to start the scale
+
     LOG("Setup finished");
 }
 
+ScaleCalibrator scaleCalibrator;
+
 void loop() {
-    delay(10000);
+    // scaleCalibrator.logCalibrationFactor(500);
+
+    LedToolkit::blinkRed();
+    LedToolkit::blinkRed(50);
+    scaleCalibrator.measureGrams();
     LOG("loop finished");
 }
