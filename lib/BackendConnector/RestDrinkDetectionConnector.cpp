@@ -6,6 +6,8 @@
 #include <string>
 #include <iostream>
 #include <Arduino.h>
+#include <thread>
+#include "LedToolkit.hpp"
 
 RestDrinkDetectionConnector::RestDrinkDetectionConnector() :
     client() {}
@@ -27,6 +29,10 @@ void RestDrinkDetectionConnector::sendWeight(const long& weight) {
     LOG_VALUE("Sending payload: ", payload.c_str());
     LOG_VALUE("Sending to endpoint: ", endpoint.c_str());
     LOG("...");
+
+    std::thread([this]() {
+        LedToolkit::blinkGreen(50, 10);
+    }).detach();
 
     client.begin(endpoint.c_str());
     client.addHeader("Content-Type", "application/json");

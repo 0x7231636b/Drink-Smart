@@ -1,6 +1,8 @@
 #include "DrinkDetectionScale.hpp"
 
 #include "Logger.hpp"
+#include "LedToolkit.hpp"
+#include "Utils.hpp"
 
 DrinkDetectionScale::DrinkDetectionScale(const int& calibrationFactor,
                                          std::unique_ptr<DrinkDetectionAction> drinkDetectionAction,
@@ -48,6 +50,7 @@ void DrinkDetectionScale::measureWeight() {
     while (isRunning) {
         switch (state) {
         case State::UNDEFINED :
+            LedToolkit::blink(Utils::red(), 50, 6);
             LOG("State is UNDEFINED");
             break;
         case State::INITIALIZED :
@@ -72,6 +75,7 @@ void DrinkDetectionScale::measureWeight() {
 }
 
 void DrinkDetectionScale::handleInitializedState() {
+    LedToolkit::setColor(Utils::Color { 255, 0, 180 });
     // cup set on the scale
     const long currentValue = scale.get_units();
     if (tareValue + deviation < currentValue) {
@@ -81,6 +85,7 @@ void DrinkDetectionScale::handleInitializedState() {
 }
 
 void DrinkDetectionScale::handleCupOnScaleState() {
+    LedToolkit::setColor(Utils::green());
     const long currentValue = scale.get_units();
     if (lastMeasuredValue - currentValue > deviation) {
         state = State::DRINKING_IN_PROGRESS;
@@ -94,6 +99,8 @@ void DrinkDetectionScale::handleCupOnScaleState() {
 /// @todo Implement a refill callback to store the data for analytics
 /// @todo make the order of the if statements robust (check for negative values out of deviation range)
 void DrinkDetectionScale::handleDrinkingInProgressState() {
+    LedToolkit::setColor(Utils::orange());
+
     const long currentValue = scale.get_units();
     LOG_VALUE("Current value: ", currentValue);
     LOG_VALUE("Last measured value: ", lastMeasuredValue);
@@ -103,7 +110,7 @@ void DrinkDetectionScale::handleDrinkingInProgressState() {
         lastMeasuredValue = currentValue;
         state = State::CUP_ON_SCALE;
     } else if (lastMeasuredValue + deviation < currentValue) {
-        LOG("REFILL detected")
+        LOG("REFILL detected");
         // TODO: Implement a refill callback to store the data for analytics
         lastMeasuredValue = currentValue;
         state = State::CUP_ON_SCALE;
